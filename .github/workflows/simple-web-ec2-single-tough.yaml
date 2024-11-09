@@ -31,6 +31,5 @@ jobs:
       - name: 5.EC2에 파일 복사
         run: |
           ssh -o StrictHostKeyChecking=no \
-          ${{ secrets.AWS_USER }}@${{ secrets.AWS_HOST }} \
-          "sudo chown -R ec2-user:ec2-user /usr/share/nginx/html"
+          ${{ secrets.AWS_USER }}@${{ secrets.AWS_HOST }} "sudo chown -R ec2-user:ec2-user /usr/share/nginx/html"
           scp -o StrictHostKeyChecking=no -r ./* ${{ secrets.AWS_USER }}@${{ secrets.AWS_HOST }}:/usr/share/nginx/html
