@@ -1,5 +1,5 @@
 ## ec2 s3 deploy12
-name: Deploy to AWS smart5
+name: Deploy to AWS smart6
 on:
   push:
     branches: [main]
