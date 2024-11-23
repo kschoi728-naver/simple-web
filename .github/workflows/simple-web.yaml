@@ -1,4 +1,4 @@
-name: 333
+name: simple-web
 
 on:
   push:
@@ -19,25 +19,25 @@ jobs:
       DOCKER_TAG: ${{ github.run_number }}
 
     steps:
-      - name: 1.소스코드 다운로드
+      - name: 소스코드 다운로드
         uses: actions/checkout@v4 
 
-      - name: 7.Docker Image Build
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/simple-web:${{ env.DOCKER_TAG }} -f ./simple-web/Dockerfile
+      - name: 도커 빌드
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/simple-web:${{ env.DOCKER_TAG }} .
 
-      - name: 8.Docker Login
+      - name: 도커 로그인
         uses: docker/login-action@v3.0.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
           logout: true
 
-      - name: 9.Docker Push
+      - name: 도커 push
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/istory:${{ env.DOCKER_TAG }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/simple-web:${{ env.DOCKER_TAG }}
 
       # 서비스 리포지토리 체크아웃
-      - name: 10.서비스 리포지토리 체크아웃
+      - name: 서비스 리포지토리 체크아웃
         uses: actions/checkout@v4
         with:
           repository: kschoi728-naver/simple-service
@@ -46,18 +46,18 @@ jobs:
           token: ${{ secrets.PAT }} 
       
       # 이미지 태그 업데이트
-      - name: 11.쿠버네티스 매니페스트 파일 이미지 태그 업데이트
+      - name: 쿠버네티스 매니페스트 파일 이미지 태그 업데이트
         run: |
           # 파일이 존재하는지 확인
           ls -la
           # 현재 파일 내용 확인
           cat simple-deploy.yaml
-          sed -i "s|image: ${{ secrets.DOCKER_USERNAME }}\/istory.*|image: ${{ secrets.DOCKER_USERNAME }}\/istory:${{ env.DOCKER_TAG }}|g" simple-deploy.yaml
+          sed -i "s|image: ${{ secrets.DOCKER_USERNAME }}\/simple-web.*|image: ${{ secrets.DOCKER_USERNAME }}\/simple-web:${{ env.DOCKER_TAG }}|g" simple-deploy.yaml
           # 변경된 내용 확인
           cat simple-deploy.yaml
       
       # 변경사항 커밋 및 푸시
-      - name: 12.서비스 리포지토리 변경사항 커밋 및 푸시
+      - name: 서비스 리포지토리 변경사항 커밋 및 푸시
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
